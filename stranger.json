@@ -1,0 +1,74 @@
+{
+  "expectedTarballFiles": [
+    "package/LICENSE",
+    "package/README.md",
+    "package/dist/bento-binding.d.ts",
+    "package/dist/bento-binding.js",
+    "package/dist/bento.d.ts",
+    "package/dist/bento.js",
+    "package/dist/headless.d.ts",
+    "package/dist/headless.js",
+    "package/dist/index.d.ts",
+    "package/dist/index.js",
+    "package/dist/layers.d.ts",
+    "package/dist/layers.js",
+    "package/dist/layout.d.ts",
+    "package/dist/layout.js",
+    "package/dist/pointer.d.ts",
+    "package/dist/pointer.js",
+    "package/dist/provider.d.ts",
+    "package/dist/provider.js",
+    "package/dist/snap.d.ts",
+    "package/dist/snap.js",
+    "package/dist/tiling.d.ts",
+    "package/dist/tiling.js",
+    "package/package.json"
+  ],
+  "localDependencies": [],
+  "runtimeFixture": "test/stranger/runtime.mjs",
+  "typecheckFixture": "test/stranger/consumer.mts",
+  "consumerDevDependencies": {
+    "@types/node": "24.13.3",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.1"
+  },
+  "docs": {
+    "sigil": "list",
+    "home": {
+      "lead": "Arrange panes while keeping content and rendering in your host.",
+      "example": {
+        "file": "home.ts",
+        "title": "Create layout state",
+        "caption": "Register a pane and release the layout state when its host closes."
+      },
+      "ladder": {
+        "start": [
+          {
+            "title": "Quickstart",
+            "href": "/quickstart/",
+            "description": "Run the first example and read its host requirements."
+          }
+        ],
+        "tasks": [
+          {
+            "title": "Examples",
+            "href": "/examples/",
+            "description": "Read worked usage and the checks that exercise it."
+          }
+        ],
+        "reference": [
+          {
+            "title": "API reference",
+            "href": "/api/",
+            "description": "Find public entrypoints and their documented contracts."
+          },
+          {
+            "title": "Install",
+            "href": "/install/",
+            "description": "Check dependencies and runtime requirements."
+          }
+        ]
+      }
+    }
+  }
+}

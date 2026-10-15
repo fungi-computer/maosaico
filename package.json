@@ -1,0 +1,83 @@
+{
+  "name": "@fungi.computer/maosaico",
+  "version": "0.0.1",
+  "author": "Levi <levi@technomancy.dev>",
+  "private": false,
+  "description": "container-relative layout and pointer ownership",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./bento": {
+      "types": "./dist/bento.d.ts",
+      "import": "./dist/bento.js"
+    },
+    "./headless": {
+      "types": "./dist/headless.d.ts",
+      "import": "./dist/headless.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "clean": "node --input-type=module --eval \"import { rm } from 'node:fs/promises'; await rm('dist', { recursive: true, force: true });\"",
+    "build": "pnpm run clean && tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --config vitest.config.ts",
+    "lint": "eslint src test vitest.config.ts --max-warnings=0",
+    "browser:contract": "node test/browser/contract.mjs",
+    "format:check": "node ../../tooling/repository/scripts/format-package-check.mjs",
+    "lint:anti-slop": "node ../../tooling/repository/scripts/lint-package-anti-slop.mjs",
+    "test:nightly": "bash ../../.agents/skills/orchestrate-multi-lane-work/scripts/run-proof.sh node test/browser/contract.mjs",
+    "pack": "mkdir -p ../../.botanical/maosaico-pack && pnpm pack --pack-destination ../../.botanical/maosaico-pack",
+    "stranger": "tsx ../../tooling/repository/src/artifacts/cli.ts --repo-root ../.. .",
+    "smoke": "node test/stranger/runtime.mjs",
+    "prepack": "node scripts/prepare-package.mjs",
+    "docs": "node ../../apps/package-docs/scripts/build-sites.mjs --check maosaico"
+  },
+  "peerDependencies": {
+    "react": ">=17"
+  },
+  "dependencies": {
+    "jotai": "2.20.3"
+  },
+  "devDependencies": {
+    "@fungi.computer/stipe": "workspace:*",
+    "@types/react": "18.3.3",
+    "esbuild": "0.28.2",
+    "playwright": "1.62.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11"
+  },
+  "botanical": {
+    "role": "package",
+    "operations": {
+      "lint": "required",
+      "typecheck": "required",
+      "build": "required",
+      "test": "required",
+      "docs": "required",
+      "pack": "required",
+      "smoke": "required",
+      "stranger": "required"
+    }
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fungi-computer/maosaico.git"
+  },
+  "publishConfig": {
+    "directory": ".botanical/package",
+    "linkDirectory": false
+  }
+}
