@@ -41,6 +41,7 @@ export function MaosaicoLayers({
   children,
   onDismiss,
 }: {
+  /** Host content rendered alongside the overlay roots. */
   children?: ReactNode;
   /** Light-dismiss transient overlays on host blur or focus entering a window. */
   onDismiss?: () => void;
@@ -116,6 +117,7 @@ export function useLayer(layer: MaosaicoLayer): HTMLElement | null {
 export const MaosaicoRegion = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement> & {
+    /** Shell region whose element becomes the corresponding layer root. */
     layer: "desktop" | "windows";
   }
 >(function MaosaicoRegion({ layer, style, children, ...props }, forwardedRef) {

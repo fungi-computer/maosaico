@@ -4,6 +4,25 @@ import { fileURLToPath } from "node:url";
 import { expect, it } from "vitest";
 import { arrangeTiles, createMaosaicoState } from "../src/headless.js";
 
+it("tiles four equal grid frames at 160×48 through the native headless entry", () => {
+  const order = ["chat", "files", "preview", "terminal"];
+  const arrangement = arrangeTiles(
+    order,
+    new Map(order.map((id) => [id, { width: 40, height: 12 }])),
+    order,
+    { width: 160, height: 48 },
+    { layout: "grid", gap: 0 },
+  );
+  expect([...arrangement.frames]).toEqual([
+    ["chat", { x: 0, y: 0, width: 80, height: 24 }],
+    ["files", { x: 80, y: 0, width: 80, height: 24 }],
+    ["preview", { x: 0, y: 24, width: 80, height: 24 }],
+    ["terminal", { x: 80, y: 24, width: 80, height: 24 }],
+  ]);
+  expect(arrangement.tabGroups).toEqual([]);
+  expect(arrangement.divider).toBeNull();
+});
+
 it("shares native layout, focus and zoom through the headless entry", () => {
   const state = createMaosaicoState();
   try {
@@ -27,6 +46,18 @@ it("shares native layout, focus and zoom through the headless entry", () => {
     state.unregister("beta");
     expect(state.zoomed).toBeNull();
     expect(state.tiles).toEqual(["alpha"]);
+  } finally {
+    state.destroy();
+  }
+});
+
+it("clears the preferred main size through its owner without fixing a viewport size", () => {
+  const state = createMaosaicoState();
+  try {
+    state.resizeMain(84);
+    expect(state.mainSize).toBe(84);
+    state.resizeMain(undefined);
+    expect(state.mainSize).toBeUndefined();
   } finally {
     state.destroy();
   }

@@ -1,6 +1,6 @@
 {
   "name": "@fungi.computer/maosaico",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "Levi <levi@technomancy.dev>",
   "private": false,
   "description": "container-relative layout and pointer ownership",
@@ -40,7 +40,8 @@
     "stranger": "tsx ../../tooling/repository/src/artifacts/cli.ts --repo-root ../.. .",
     "smoke": "node test/stranger/runtime.mjs",
     "prepack": "node scripts/prepare-package.mjs",
-    "docs": "node ../../apps/package-docs/scripts/build-sites.mjs --check maosaico"
+    "docs": "tsx ../../tooling/repository/src/docs/cli.ts check --root ../..",
+    "docs:write": "tsx ../../tooling/repository/src/docs/cli.ts write --root ../.."
   },
   "peerDependencies": {
     "react": ">=17"

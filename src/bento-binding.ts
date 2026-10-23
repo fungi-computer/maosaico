@@ -10,15 +10,24 @@ import {
 import type { BentoGeometry, BentoOp, BentoPlacement } from "./bento.js";
 import { usePointerDrag } from "./pointer.js";
 
+/** Host-owned placements and the callback receiving completed intents. */
 export type BentoOptions = BentoGeometry & {
+  /** Current committed tile positions and spans. */
   placements: readonly BentoPlacement[];
+  /** Receive operations for a completed gesture or keyboard action. */
   onChange: (ops: readonly BentoOp[]) => void;
+  /** Set false to disable pointer and keyboard edits. */
   enabled?: boolean;
 };
+/** Renderable frames and interaction attributes for host-owned tiles. */
 export type BentoBinding = {
+  /** Current committed or preview geometry. */
   frames: ReturnType<typeof bentoFrames>;
+  /** Whether frames include a live, non-stale gesture preview. */
   preview: boolean;
+  /** Tile being previewed, or null. */
   previewId: string | null;
+  /** Bind a tile's move or resize interaction to a host element. */
   bind: (id: string, kind: "move" | "resize") => DOMAttributes<HTMLElement>;
 };
 type Gesture = {

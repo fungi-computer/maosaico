@@ -32,34 +32,56 @@ const Context = createContext<{
   arrangement: Arrangement;
   containerRef: React.RefObject<HTMLElement | null> | undefined;
 } | null>(null);
-export type MaosaicoItem = { id: string; frame: Frame; minima: Minima };
+/** A mounted pane's stable identity and initial geometry. */
+export type MaosaicoItem = {
+  /** Identity used for registration and commands. */
+  id: string;
+  /** Initial floating frame; later changes use layout commands. */
+  frame: Frame;
+  /** Minimum dimensions kept current while the pane is mounted. */
+  minima: Minima;
+};
+/** Interaction mode and layout participation for a mounted pane. */
 export type MaosaicoItemOptions = {
+  /** Defaults to dragging; resize changes dimensions instead of origin. */
   kind?: "drag" | "resize";
+  /** Defaults to true; false retains geometry but excludes the pane from layout. */
   participating?: boolean;
 };
+/** Geometry, focus state and host element interactions for a pane. */
 export type MaosaicoItemBinding = {
+  /** Visible layout frame, falling back to the pane's floating geometry. */
   frame: Frame;
   /** Merge into the window's style, inside the windows layer. */
   stackingStyle: Pick<React.CSSProperties, "zIndex">;
+  /** Whether this pane has a frame in the current arrangement. */
   visible: boolean;
+  /** Whether this pane is last in focus order. */
   active: boolean;
+  /** Pointer attributes to spread onto the pane's interaction element. */
   props: React.DOMAttributes<HTMLElement>;
+  /** Bring the pane to the top of focus order. */
   focus: () => void;
+  /** Snap the pane to a container edge or corner. */
   snap: (side: SnapSide) => void;
+  /** Restore the pane's retained floating frame. */
   restore: () => void;
 };
 
-/** Omit tiling to retain floating frames. Width is a preference, in pixels. */
+/** Omit tiling to retain floating frames. Main size is a preference, in pixels. */
 export function MaosaicoRoot({
   bounds,
   tiling,
   containerRef,
   children,
 }: {
+  /** Available container dimensions in host coordinates. */
   bounds: Bounds;
+  /** Optional tiling strategy; omission preserves floating frames. */
   tiling?: TilingOptions | undefined;
   /** The positioned workspace element; supplying it enables container-relative edge snapping. */
   containerRef?: React.RefObject<HTMLElement | null>;
+  /** Host-owned content rendered inside the layout context. */
   children?: React.ReactNode;
 }) {
   const state = useMemo(createMaosaicoState, []);
@@ -156,21 +178,40 @@ export function useMaosaicoLayout() {
   );
   return {
     /** Decorations rank immediately above every window, inside the windows region. */
-    stackingStyle: { zIndex: state.order.length },
+    stackingStyle: {
+      /** Rank above every pane in the windows region. */
+      zIndex: state.order.length,
+    },
+    /** Whether the root supplied a tiling strategy. */
     mode: tiled ? ("tiled" as const) : ("floating" as const),
+    /** Stable order of participating tiles. */
     order,
+    /** Whether a frame or divider gesture is active. */
     interacting: state.gesture !== null,
+    /** Candidate floating-frame snap, hidden while tiled or zoomed. */
     snapPreview:
       !tiled && !state.zoomed && state.gesture?.kind === "frame"
         ? (state.gesture.snap ?? null)
         : null,
+    /** Most recently focused participating pane, or null. */
     activeId: state.order.at(-1) ?? null,
+    /** Pane expanded to fill the root, or null. */
     zoomedId: state.zoomed,
+    /** Overflow panes sharing layout slots. */
     tabGroups: arrangement.tabGroups,
-    divider: divider && { ...divider, props: dividerProps },
+    /** Divider geometry and pointer attributes, or null. */
+    divider: divider && {
+      ...divider,
+      /** Captured-pointer attributes for resizing the main pane. */
+      props: dividerProps,
+    },
+    /** Focus a registered pane. */
     focus: state.focus,
+    /** Swap two participating panes in tiling order. */
     swap: state.swap,
+    /** Expand a pane or clear expansion with null. */
     zoom: state.zoom,
+    /** Set the main-pane extent within current divider bounds. */
     resizeMain: (size: number) => {
       if (divider)
         state.resizeMain(Math.min(divider.max, Math.max(divider.min, size)));
@@ -178,6 +219,7 @@ export function useMaosaicoLayout() {
   };
 }
 
+/** Register a mounted pane and bind its geometry and captured-pointer lifecycle. */
 export function useMaosaicoItem(
   item: MaosaicoItem,
   options: MaosaicoItemOptions = {},

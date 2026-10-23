@@ -5,7 +5,7 @@ export {
 } from "./provider.js";
 export { MaosaicoLayers, MaosaicoRegion, useLayer } from "./layers.js";
 export type { MaosaicoLayer } from "./layers.js";
-export type { TilingOptions } from "./tiling.js";
+export type { TilingLayout, TilingOptions } from "./tiling.js";
 export type {
   MaosaicoItem,
   MaosaicoItemOptions,

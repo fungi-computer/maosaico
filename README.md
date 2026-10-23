@@ -74,11 +74,20 @@ and pane registration in [`test/tiling.test.tsx`](test/tiling.test.tsx).
 ## Core concepts
 
 `MaosaicoRoot` owns layout state for one root. Pass its current container size
-as `bounds`. Without `tiling`, panes use floating frames. With `tiling`, the
-first pane is the main pane and the others share the remaining space. A
-preferred `mainSize` is measured in pixels along `axis` (`"x"` by default). The
-layout clamps frames to the container and respects the minima supplied by each
-pane.
+as `bounds`. Without `tiling`, panes use floating frames. With `tiling`, choose
+`layout: "main-left" | "main-top" | "columns" | "rows" | "grid"`. `main-left` is
+the default: the first pane is the main pane and companions stack beside it.
+`main-top` puts the main pane above its companions. The preferred `mainSize` is
+the main width or height respectively, clamped to pane minima and available
+space; these layouts expose one draggable divider.
+
+`columns`, `rows`, and `grid` use equal cells and ignore `mainSize`; they have
+no main divider. Grid starts near-square by tile count and adapts to the
+container's capacity. Equal layouts preserve leading tiles and group overflow in
+the final cell, showing that group's most recently focused pane. Minima account
+for every member of a group, so changing its active tab does not move the cell.
+If even one minimum cannot fit, a single full-container tab group keeps a pane
+readable. The caller renders tabs from `tabGroups`; hidden panes stay mounted.
 
 `useMaosaicoItem` registers an ID, starting frame, and minimum size. The
 returned binding provides the current frame, visibility, active state, drag

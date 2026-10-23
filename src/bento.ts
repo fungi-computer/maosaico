@@ -4,23 +4,50 @@ import type { Frame } from "./layout.js";
 export type BentoColumns = 1 | 2 | 4;
 /** A caller-owned tile in integer grid cells. IDs are unique within a grid. */
 export type BentoPlacement = Readonly<{
+  /** Tile identity, unique within the grid. */
   id: string;
+  /** Zero-based starting column. */
   col: number;
+  /** Zero-based starting row. */
   row: number;
+  /** Column span, normalized to the grid width. */
   w: number;
+  /** Row span, normalized to at least one cell. */
   h: number;
 }>;
 /** Intent proposed by the interaction binding and accepted by the host. */
 export type BentoOp =
-  | Readonly<{ kind: "move"; id: string; col: number; row: number }>
-  | Readonly<{ kind: "resize"; id: string; w: number; h: number }>;
+  | Readonly<{
+      /** Proposes a new grid origin. */
+      kind: "move";
+      /** Identity of the tile to move. */
+      id: string;
+      /** Proposed starting column. */
+      col: number;
+      /** Proposed starting row. */
+      row: number;
+    }>
+  | Readonly<{
+      /** Proposes new grid spans. */
+      kind: "resize";
+      /** Identity of the tile to resize. */
+      id: string;
+      /** Proposed column span. */
+      w: number;
+      /** Proposed row span. */
+      h: number;
+    }>;
 /** Container-relative pixel geometry supplied by the measured host. */
 export type BentoGeometry = Readonly<{
+  /** Host-selected responsive column count. */
   columns: BentoColumns;
+  /** Available container width in pixels. */
   width: number;
+  /** Default height of a row in pixels. */
   rowHeight: number;
   /** Measured row heights; omitted rows retain rowHeight. Cells stay unchanged. */
   rowHeights?: readonly number[] | undefined;
+  /** Pixel spacing between cells. */
   gap: number;
 }>;
 
@@ -49,6 +76,7 @@ const normalize = (
   };
 };
 
+/** Normalize cells and push collisions downward, preserving caller identity/order. */
 export function resolveBento(
   placements: readonly BentoPlacement[],
   columns: BentoColumns,

@@ -1,0 +1,9 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "extends": "../../tooling/docs/typedoc.base.json",
+  "name": "@fungi.computer/maosaico",
+  "entryPoints": ["src/index.ts", "src/bento.ts", "src/headless.ts"],
+  "tsconfig": "tsconfig.build.json",
+  "readme": "docs/api-overview.md",
+  "out": "docs/api"
+}

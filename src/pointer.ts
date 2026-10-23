@@ -4,8 +4,11 @@ import type { DOMAttributes, PointerEvent } from "react";
 /** One captured pointer; cancellation and unmount share the same release path. */
 export function usePointerDrag(
   handlers: {
+    /** Return true to accept the captured pointer gesture. */
     begin: (event: PointerEvent<HTMLElement>) => boolean;
+    /** Receive incremental pointer movement in client-coordinate pixels. */
     move: (dx: number, dy: number, event: PointerEvent<HTMLElement>) => void;
+    /** Complete the gesture; true denotes cancellation or lost capture. */
     end: (cancel: boolean) => void;
   },
   enabled = true,

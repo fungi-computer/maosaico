@@ -1,30 +1,74 @@
 import { atom, createStore } from "jotai/vanilla";
 
-export type Point = { x: number; y: number };
-export type Size = { width: number; height: number };
+/** Coordinates relative to the host's container. */
+export type Point = {
+  /** Horizontal coordinate. */
+  x: number;
+  /** Vertical coordinate. */
+  y: number;
+};
+/** Dimensions in the host's coordinate units. */
+export type Size = {
+  /** Horizontal extent. */
+  width: number;
+  /** Vertical extent. */
+  height: number;
+};
+/** A container-relative origin and dimensions. */
 export type Frame = Point & Size;
+/** Available container dimensions. */
 export type Bounds = Size;
+/** Smallest dimensions the host permits for a pane. */
 export type Minima = Size;
+/** Edge or corner used to derive a snapped frame. */
 export type SnapSide =
   "left" | "right" | "top-left" | "top-right" | "bottom-left" | "bottom-right";
+/** The pointer-owned frame or divider operation currently in progress. */
 export type Gesture =
   | {
+      /** Identifies a frame gesture. */
       kind: "frame";
+      /** Registered pane being moved or resized. */
       id: string;
+      /** Pointer that owns the gesture. */
       pointerId: number;
+      /** Frame restored when the gesture is cancelled. */
       start: Frame;
-      snap?: { side: SnapSide; frame: Frame } | null;
+      /** Candidate snap applied only when the gesture completes. */
+      snap?: {
+        /** Target edge or corner. */
+        side: SnapSide;
+        /** Frame computed for the target. */
+        frame: Frame;
+      } | null;
     }
-  | { kind: "divider"; pointerId: number; start: number | undefined };
+  | {
+      /** Identifies a divider gesture. */
+      kind: "divider";
+      /** Pointer that owns the divider. */
+      pointerId: number;
+      /** Main-size preference restored on cancellation. */
+      start: number | undefined;
+    };
+/** Pane geometry, ordering and the active gesture held by the layout store. */
 export type State = {
+  /** Registered floating frames, keyed by pane identity. */
   frames: Map<string, Frame>;
+  /** Focus order, with the most recently focused pane last. */
   order: string[];
+  /** Stable tiling order of participating panes. */
   tiles: string[];
+  /** Host-supplied minimum dimensions per pane. */
   minima: Map<string, Minima>;
+  /** Panes currently included in layout. */
   participating: Set<string>;
+  /** Preferred main-pane extent, or undefined for the default half. */
   mainSize: number | undefined;
+  /** Pane expanded to the container, or null. */
   zoomed: string | null;
+  /** Current pointer operation, or null. */
   gesture: Gesture | null;
+  /** Floating frames retained for restoration after snapping. */
   restore: Map<string, Frame>;
 };
 const stateAtom = atom<State>({
@@ -84,14 +128,23 @@ const snapFrame = (side: SnapSide, bounds: Bounds, minima: Minima): Frame => {
                 };
   return clampFrame(frame, bounds, minima);
 };
+/** Live layout projection and commands; each state instance owns its store. */
 export type MaosaicoState = Readonly<State> & {
+  /** Revision incremented by store updates. */
   readonly version: number;
+  /** Observe store changes; returns an unsubscribe function. */
   subscribe: (listener: () => void) => () => void;
+  /** Register or replace a pane's frame and minima, including it in layout. */
   register: (id: string, frame: Frame, minima: Minima) => void;
+  /** Include or exclude a registered pane without discarding its frame. */
   setParticipation: (id: string, participating: boolean) => void;
+  /** Update minimum dimensions for an existing pane. */
   setMinima: (id: string, minima: Minima) => void;
+  /** Remove a pane, its ordering, restoration frame and active gesture. */
   unregister: (id: string) => void;
+  /** Capture a participating pane's starting frame for a pointer gesture. */
   begin: (id: string, pointerId: number) => void;
+  /** Update the owning pointer's clamped frame and optional snap preview. */
   move: (
     id: string,
     pointerId: number,
@@ -100,18 +153,30 @@ export type MaosaicoState = Readonly<State> & {
     minima: Minima,
     snapSide?: SnapSide | null,
   ) => void;
+  /** Finish the owning pointer's gesture, applying its snap if present. */
   end: (id: string, pointerId: number) => void;
+  /** Restore the owning pointer's starting frame and clear its gesture. */
   cancel: (id: string, pointerId: number) => void;
+  /** Snap a participating pane and retain its previous frame. */
   snap: (id: string, side: SnapSide, bounds: Bounds, minima: Minima) => void;
+  /** Restore a retained floating frame, clamped to current bounds and minima. */
   restoreFrame: (id: string, bounds: Bounds, minima: Minima) => void;
+  /** Move a registered pane to the top of focus order. */
   focus: (id: string) => void;
+  /** Exchange two participating panes' positions in tiling order. */
   swap: (first: string, second: string) => void;
+  /** Expand a participating pane, or clear expansion with null. */
   zoom: (id: string | null) => void;
-  resizeMain: (size: number) => void;
+  /** Clear the preference with undefined to restore the default half. */
+  resizeMain: (size: number | undefined) => void;
+  /** Start a divider gesture only when no other gesture is active. */
   beginDivider: (pointerId: number) => boolean;
+  /** Finish the owning divider gesture, restoring its preference on cancel. */
   finishDivider: (pointerId: number, cancel: boolean) => void;
+  /** Clear the current gesture and retained restoration frames. */
   destroy: () => void;
 };
+/** Create an independent layout store with no registered panes. */
 export const createMaosaicoState = (): MaosaicoState => {
   const store = createStore();
   const read = () => store.get(stateAtom);

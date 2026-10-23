@@ -4,6 +4,23 @@ import {
   arrangeTiles,
 } from "@fungi.computer/maosaico/headless";
 const state = createMaosaicoState();
+const grid = arrangeTiles(
+  ["one", "two", "three", "four"],
+  new Map(),
+  [],
+  { width: 160, height: 48 },
+  { layout: "grid", gap: 0 },
+);
+assert.deepEqual(
+  [...grid.frames.values()],
+  [
+    { x: 0, y: 0, width: 80, height: 24 },
+    { x: 80, y: 0, width: 80, height: 24 },
+    { x: 0, y: 24, width: 80, height: 24 },
+    { x: 80, y: 24, width: 80, height: 24 },
+  ],
+);
+assert.equal(grid.divider, null);
 try {
   state.register(
     "note",

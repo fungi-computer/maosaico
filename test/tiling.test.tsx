@@ -5,6 +5,7 @@ import {
   MaosaicoRoot,
   useMaosaicoItem,
   useMaosaicoLayout,
+  type TilingLayout,
 } from "../src/index.js";
 import { arrangeTiles } from "../src/tiling.js";
 
@@ -92,7 +93,10 @@ function Controls() {
     </>
   );
 }
-function mount(initialBounds = wide, axis: "x" | "y" = "x") {
+function mount(
+  initialBounds = wide,
+  layout: "main-left" | "main-top" = "main-left",
+) {
   const host = document.createElement("div");
   document.body.append(host);
   const root = createRoot(host);
@@ -101,6 +105,7 @@ function mount(initialBounds = wide, axis: "x" | "y" = "x") {
     tiled = true,
     panes = ids,
     participation: Partial<Record<string, boolean>> = {},
+    nextLayout: TilingLayout = layout,
   ) => {
     act(() => {
       root.render(
@@ -108,7 +113,11 @@ function mount(initialBounds = wide, axis: "x" | "y" = "x") {
           bounds={bounds}
           tiling={
             tiled
-              ? { axis, mainSize: axis === "y" ? 300 : 600, gap: 8 }
+              ? {
+                  layout: nextLayout,
+                  mainSize: nextLayout === "main-top" ? 300 : 600,
+                  gap: 8,
+                }
               : undefined
           }
         >
@@ -245,7 +254,7 @@ describe("automatic main and companions", () => {
     ]);
   });
 
-  it("tiles top and bottom on the y axis with a bounded divider", () => {
+  it("tiles main-top with a bounded vertical divider", () => {
     const vertical = arrangeTiles(
       ["preview", "terminal"],
       new Map([
@@ -254,7 +263,7 @@ describe("automatic main and companions", () => {
       ]),
       ["preview", "terminal"],
       { width: 560, height: 400 },
-      { axis: "y", mainSize: 280, gap: 8 },
+      { layout: "main-top", mainSize: 280, gap: 8 },
     );
     expect(vertical.frames.get("preview")).toEqual({
       x: 0,
@@ -283,10 +292,30 @@ describe("automatic main and companions", () => {
       ]),
       ["preview", "terminal"],
       { width: 560, height: 250 },
-      { axis: "y", gap: 8 },
+      { layout: "main-top", gap: 8 },
     );
     expect(tooShort.tabGroups).toEqual([["preview", "terminal"]]);
     expect(tooShort.divider).toBeNull();
+  });
+
+  it("preserves live input across all named layouts without remounting", () => {
+    const { pane, render } = mount();
+    const original = pane("chat");
+    const input = original.querySelector("input");
+    if (!input) throw new Error("Missing input");
+    input.value = "unsent work";
+    for (const name of [
+      "grid",
+      "columns",
+      "rows",
+      "main-top",
+      "main-left",
+    ] as const) {
+      render(wide, true, ids, {}, name);
+      expect(pane("chat")).toBe(original);
+      expect(original.querySelector("input")).toBe(input);
+      expect(input.value).toBe("unsent work");
+    }
   });
 
   it("preserves the exact live input through focus, zoom, swaps, mode changes and resizing", () => {
@@ -360,7 +389,7 @@ describe("automatic main and companions", () => {
   });
 
   it("drags and cancels a y-axis divider without remounting the pane", () => {
-    const { host, pane, click } = mount(wide, "y");
+    const { host, pane, click } = mount(wide, "main-top");
     const original = pane("chat");
     const divider = host.querySelector<HTMLElement>("[data-divider]");
     if (!divider) throw new Error("Missing divider");
