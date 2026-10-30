@@ -134,8 +134,8 @@ workbench below a toolbar.
 
 ## API reference
 
-The package has no generated API page. See the public
-[exports and types](src/index.ts); implementation details such as state
+See the generated [API reference](docs/api/README.md) and the public
+[exports and types](src/index.ts). Implementation details such as state
 collections remain private.
 
 ## Examples and checks
