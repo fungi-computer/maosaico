@@ -35,7 +35,7 @@
     "browser:contract": "node test/browser/contract.mjs",
     "format:check": "node ../../tooling/repository/scripts/format-package-check.mjs",
     "lint:anti-slop": "node ../../tooling/repository/scripts/lint-package-anti-slop.mjs",
-    "test:nightly": "bash ../../.agents/skills/orchestrate-multi-lane-work/scripts/run-proof.sh node test/browser/contract.mjs",
+    "test:nightly": "bash ../../tooling/proof-runner/run-proof.sh node test/browser/contract.mjs",
     "pack": "mkdir -p ../../.botanical/maosaico-pack && pnpm pack --pack-destination ../../.botanical/maosaico-pack",
     "stranger": "tsx ../../tooling/repository/src/artifacts/cli.ts --repo-root ../.. .",
     "smoke": "node test/stranger/runtime.mjs",
