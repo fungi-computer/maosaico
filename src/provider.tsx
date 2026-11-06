@@ -145,7 +145,7 @@ function useRoot() {
 
 /** Layout commands keep content and DOM ownership with the caller. */
 export function useMaosaicoLayout() {
-  const { state, arrangement, tiled } = useRoot();
+  const { state, arrangement, tiled, bounds } = useRoot();
   const order: readonly string[] = state.tiles;
   const start = useRef({ pointer: 0, position: 0 });
   const divider = arrangement.divider;
@@ -177,6 +177,8 @@ export function useMaosaicoLayout() {
     divider !== null,
   );
   return {
+    /** Measured workspace size, shared with the consumer's frame motion. */
+    bounds,
     /** Decorations rank immediately above every window, inside the windows region. */
     stackingStyle: {
       /** Rank above every pane in the windows region. */

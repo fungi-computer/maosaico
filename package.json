@@ -1,6 +1,6 @@
 {
   "name": "@fungi.computer/maosaico",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Levi <levi@technomancy.dev>",
   "private": false,
   "description": "container-relative layout and pointer ownership",

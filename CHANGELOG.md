@@ -1,5 +1,13 @@
 # @fungi.computer/maosaico
 
+## 0.1.1
+
+### Patch Changes
+
+- Changes since 0.1.0:
+
+  - fix(tourtois): keep windows inside resized workspaces
+
 ## 0.1.0
 
 ### Minor Changes
