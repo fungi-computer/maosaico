@@ -6,12 +6,11 @@ DOM focus with the host.
 
 ## Install or set up
 
-Maosaico is a React tiling layout package. It requires React 17 or newer as a
-peer dependency. From the repository root, build it with:
-
 ```sh
-pnpm --filter @fungi.computer/maosaico build
+npm install @fungi.computer/maosaico react react-dom
 ```
+
+Maosaico needs React 17 or newer as a peer dependency.
 
 The package exports `MaosaicoRoot`, `useMaosaicoItem`, `useMaosaicoLayout`,
 `MaosaicoLayers`, `useLayer`, and `usePointerDrag` from
@@ -177,7 +176,9 @@ see [`LICENSE`](LICENSE) for its MIT license terms and attribution.
 
 ## Contribute and license
 
-Maosaico is MIT licensed; see [`LICENSE`](LICENSE).
+Build it from the repository root with
+`pnpm --filter @fungi.computer/maosaico build`. Maosaico is MIT licensed; see
+[`LICENSE`](LICENSE).
 
 `MaosaicoLayers onDismiss` reports host-window blur and focus entering the
 windows region. Compose it with Caps `OverlayRoot subscribeDismiss` to retire
@@ -229,6 +230,3 @@ consumer, checks the exact shipped files, runs the public runtime fixture and
 compiles every JavaScript entrypoint with strict NodeNext and no library-check
 skip. This qualification does not publish npm releases or push a repository
 split.
-
-See [LICENSE](LICENSE) for the license and the package manifest for its public
-repository destination.
