@@ -227,8 +227,9 @@ export function useMaosaicoItem(
   options: MaosaicoItemOptions = {},
 ): MaosaicoItemBinding {
   const { state, bounds, tiled, arrangement, containerRef } = useRoot();
+  // Register before participation is applied: an absent pane cannot be parked.
   // Frame seeds a mounted identity; later layout changes use commands, not remounts.
-  useEffect(() => {
+  useLayoutEffect(() => {
     state.register(item.id, item.frame, item.minima);
     return () => {
       state.unregister(item.id);

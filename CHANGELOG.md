@@ -1,5 +1,13 @@
 # @fungi.computer/maosaico
 
+## 0.1.2
+
+### Patch Changes
+
+- Changes since 0.1.1:
+
+  - fix(maosaico): keep initially collapsed panes out of the layout
+
 ## 0.1.1
 
 ### Patch Changes

@@ -96,6 +96,7 @@ function Controls() {
 function mount(
   initialBounds = wide,
   layout: "main-left" | "main-top" = "main-left",
+  initialParticipation: Partial<Record<string, boolean>> = {},
 ) {
   const host = document.createElement("div");
   document.body.append(host);
@@ -155,11 +156,21 @@ function mount(
     });
     host.remove();
   });
-  render(initialBounds);
+  render(initialBounds, true, ids, initialParticipation);
   return { host, render, pane, click };
 }
 
 describe("automatic main and companions", () => {
+  it("keeps an initially parked pane out of the layout until it is opened", () => {
+    const { pane, render } = mount(wide, "main-left", { files: false });
+    const files = pane("files");
+    expect(files.hidden).toBe(true);
+    expect(files.dataset.active).toBe("false");
+    expect(pane("preview").style.width).toBe("392px");
+    render(wide, true, ids, { files: true });
+    expect(pane("files")).toBe(files);
+    expect(files.hidden).toBe(false);
+  });
   it("parks a mounted item without spending a tile or accepting focus, then restores its frame and DOM", () => {
     const { pane, click, render } = mount();
     const files = pane("files");
