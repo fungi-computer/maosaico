@@ -1,29 +1,17 @@
 # Maosaico (`@fungi.computer/maosaico`)
 
-Maosaico arranges React panes inside a measured container. It supports floating
-frames and optional tiling while leaving pane content, styling, controls, and
-DOM focus with the host.
+Maosaico lays out windows inside an area of your React app, floating or tiled.
+Your app keeps what is inside each window, its styling and focus.
 
-## Install or set up
-
-```sh
-npm install @fungi.computer/maosaico react react-dom
-```
-
-Maosaico needs React 17 or newer as a peer dependency.
-
-The package exports `MaosaicoRoot`, `useMaosaicoItem`, `useMaosaicoLayout`,
-`MaosaicoLayers`, `useLayer`, and `usePointerDrag` from
-`@fungi.computer/maosaico`.
-
-`usePointerDrag` supplies captured-pointer DOM props for a caller-owned gesture.
-Its `move` callback receives incremental pixel deltas; cancellation and unmount
-release the same capture. An optional third `AbortSignal` lets the caller cancel
-a gesture; Escape policy stays with the caller. Grove uses it with the Caps
-`ResizeHandle` for its conversation rail, without introducing a tiling root for
-one sidebar width.
+![Panes tiled by Maosaico: three windows laid out in the Caps Ladle workbench](docs/media/readme-tiling.png)
 
 ## Quick start
+
+Install it:
+
+```sh
+npm install @fungi.computer/maosaico
+```
 
 This illustrative example registers panes and asks Maosaico to tile them within
 the supplied bounds:
@@ -69,6 +57,53 @@ function Workspace() {
 
 This sketch is illustrative; the layout tests exercise the public React boundary
 and pane registration in [`test/tiling.test.tsx`](test/tiling.test.tsx).
+
+## Common tasks
+
+### Tile a set of panes
+
+Register panes with `useMaosaicoItem` and let `MaosaicoRoot` tile them in the
+bounds you give it. See the Quick start.
+
+### Float a pane
+
+Give a pane its own `frame` and minimum size. See
+[Core concepts](#core-concepts).
+
+### Layer popups above panes
+
+See [Shell layers](#shell-layers).
+
+### Know the limits
+
+See Limits and errors.
+
+## Reference
+
+### Overview
+
+Maosaico arranges React panes inside a measured container. It supports floating
+frames and optional tiling while leaving pane content, styling, controls, and
+DOM focus with the host.
+
+## Install or set up
+
+```sh
+npm install @fungi.computer/maosaico react react-dom
+```
+
+Maosaico needs React 17 or newer as a peer dependency.
+
+The package exports `MaosaicoRoot`, `useMaosaicoItem`, `useMaosaicoLayout`,
+`MaosaicoLayers`, `useLayer`, and `usePointerDrag` from
+`@fungi.computer/maosaico`.
+
+`usePointerDrag` supplies captured-pointer DOM props for a caller-owned gesture.
+Its `move` callback receives incremental pixel deltas; cancellation and unmount
+release the same capture. An optional third `AbortSignal` lets the caller cancel
+a gesture; Escape policy stays with the caller. Grove uses it with the Caps
+`ResizeHandle` for its conversation rail, without introducing a tiling root for
+one sidebar width.
 
 ## Core concepts
 
